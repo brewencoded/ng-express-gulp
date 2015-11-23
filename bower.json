@@ -1,0 +1,24 @@
+{
+  "name": "ng-express-gulp",
+  "description": "Base structure for an angular, gulp, and express project with browser-sync and gulp-nodemon for live previews",
+  "main": "bin/www",
+  "authors": [
+    "Victor A. Rodriguez <vrodriguex5749@gmail.com> (https://github.com/vrodriguez363)"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "gulp",
+    "express",
+    "browser-sync",
+    "gulp-nodemon"
+  ],
+  "homepage": "https://github.com/vrodriguez363/ng-express-gulp",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

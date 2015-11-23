@@ -1,0 +1,32 @@
+{
+  "name": "ng-express-gulp",
+  "version": "0.0.0",
+  "description": "Base structure for an angular, gulp, and express project with browser-sync and gulp-nodemon for live previews",
+  "main": "bin/www",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vrodriguez363/ng-express-gulp.git"
+  },
+  "keywords": [
+    "gulp",
+    "express",
+    "browser-sync",
+    "gulp-nodemon"
+  ],
+  "author": "Victor A. Rodriguez <vrodriguex5749@gmail.com> (https://github.com/vrodriguez363)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vrodriguez363/ng-express-gulp/issues"
+  },
+  "homepage": "https://github.com/vrodriguez363/ng-express-gulp#readme",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "chai-as-promised": "^5.1.0",
+    "mocha": "^2.3.4",
+    "sinon": "^1.17.2",
+    "supertest": "^1.1.0"
+  }
+}
