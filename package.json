@@ -23,10 +23,29 @@
   },
   "homepage": "https://github.com/vrodriguez363/ng-express-gulp#readme",
   "devDependencies": {
+    "browser-sync": "^2.10.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-cache": "^0.4.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-nodemon": "^2.0.4",
+    "gulp-plumber": "^1.0.1",
+    "gulp-sass": "^2.1.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.1",
     "mocha": "^2.3.4",
     "sinon": "^1.17.2",
     "supertest": "^1.1.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "cookie-parser": "^1.4.0",
+    "debug": "^2.2.0",
+    "express": "^4.13.3",
+    "morgan": "^1.6.1",
+    "serve-favicon": "^2.3.0"
   }
 }
