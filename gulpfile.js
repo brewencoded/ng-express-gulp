@@ -11,7 +11,8 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     imagemin = require('gulp-imagemin'),
-    cache = require('gulp-cache');
+    cache = require('gulp-cache'),
+    minify = require('gulp-minify-css');
 
 //var test = require('./gulp-test.js');
 
@@ -29,7 +30,8 @@ gulp.task('sass', function () {
     return gulp.src(['src/client/public/scss/base.scss'])
         .pipe(plumber())
         .pipe(sourcemaps.init())
-        .pipe(sass({outputStyle: 'compressed'}))
+        .pipe(sass())
+        .pipe(minify())
         .pipe(prefix('last 2 versions', '> 1%', 'ie 8', 'Android 2', 'Firefox ESR'))
         .pipe(sourcemaps.write('maps'))
         .pipe(gulp.dest('build/client/public/css'))
