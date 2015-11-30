@@ -7,7 +7,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var routes = require('./server/routes/index');
+//var router = require('./server/routes/index');
 
 var app = express();
 
@@ -19,9 +19,12 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'client/public')));
+app.use(express.static(path.join(__dirname, '/client/public')));
 
-app.use('*', routes);
+/* GET index page. */
+app.use('*', function (req, res) {
+    res.sendFile(__dirname + '/client/public/index.html');
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -45,7 +48,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
-    res.send('err');
+    res.send(err);
 });
 
 

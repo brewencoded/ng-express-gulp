@@ -4,10 +4,7 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
-router.get('*', function (req, res) {
-    res.sendFile(__dirname + 'client/public/index.html');
-});
+/* API routes */
 
 module.exports = router;
 
