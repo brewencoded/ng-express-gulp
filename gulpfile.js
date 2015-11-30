@@ -12,16 +12,18 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     imagemin = require('gulp-imagemin'),
     cache = require('gulp-cache'),
-    minify = require('gulp-minify-css');
-
-//var test = require('./gulp-test.js');
+    minify = require('gulp-minify-css'),
+    mocha = require('gulp-mocha');
 
 //////////////////////////////////////////////
 // Run Tests
 //////////////////////////////////////////////
-gulp.task('test', function () {
-
+gulp.task('server-test', function () {
+    return gulp.src('src/tests/test-server.js')
+        .pipe(mocha());
 });
+
+gulp.task('angular-test', function () {});
 
 //////////////////////////////////////////////
 // Sass
