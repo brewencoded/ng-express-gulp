@@ -135,7 +135,7 @@ gulp.task('browser-sync', ['nodemon'], function () {
         port: 8087
     });
 
-    gulp.watch('src/client/public/js/**/*.js', ['dev-js']).on('change', browserSync.reload);
+    gulp.watch('src/client/public/js/**/*', ['dev-js']).on('change', browserSync.reload);
     gulp.watch('src/client/public/scss/*.scss', ['sass']).on('change', browserSync.reload);
     gulp.watch('src/client/public/templates/**/*.html', ['templates']).on('change', browserSync.reload);
     gulp.watch('src/client/public/index.html', ['index']).on('change', browserSync.reload);

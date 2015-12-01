@@ -1,4 +1,4 @@
-angular.module('my-app', ['ui.router'])
+angular.module('myApp', ['ui.router'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', function($urlRouterProvider, $stateProvider, $locationProvider) {
     	'use strict';
         $urlRouterProvider.otherwise('404');

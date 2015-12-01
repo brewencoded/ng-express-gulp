@@ -1,7 +1,16 @@
 <div class="nav">
     <ul>
-        <li><a ui-sref="about">About</a></li>
-        <li><a ui-sref="contact">Contact</a></li>
-        <li><a ui-sref="home">Home</a></li>
+        <li ui-sref-active="active">
+            <a ui-sref="about">About</a>
+        </li>
+        <li ui-sref-active="active">
+            <a ui-sref="contact">Contact</a>
+        </li>
+        <li ui-sref-active="active">
+            <a ui-sref="home">Home</a>
+        </li>
+        <li>
+            <a href="#" id="toggle-login" ng-click="toggleLogin()">Login</a>
+        </li>
     </ul>
 </div>

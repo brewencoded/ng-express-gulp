@@ -9,17 +9,13 @@ var request = require('supertest'),
 describe('loading express', function () {
 	var server;
 	beforeEach(function () {
+		delete require.cache[require.resolve('../index')];
 		server = require('../index');
 	});
 	it('responds to /', function (done) {
 		request(server)
 		.get('/')
+		.expect('Content-Type', 'text/html')
 		.expect(200, done);
-	});
-	it('404 to everything else', function (done) {
-		console.log('responds to 404');
-		request(server)
-		.get('/foo/bar')
-		.expect(404, done);
 	});
 });

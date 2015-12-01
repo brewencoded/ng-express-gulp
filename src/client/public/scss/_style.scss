@@ -1,0 +1,131 @@
+/****************
+* global vars
+****************/
+$header_black: #404040;
+$h1_font: bold 2em arial;
+
+/****************
+* global mixins
+****************/
+@mixin headers {
+	padding: .5em 0;
+	text-align: center;
+}
+
+/****************
+* element styles
+****************/
+a {
+	text-decoration: none;
+	color: #333;
+}
+body {
+	font-family: arial;
+	overflow-x: hidden;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+
+	li {
+		float: right;
+	}
+}
+
+h1 {
+	@include headers;
+	font: $h1_font;
+	color: $header_black;
+	clear: both;
+}
+
+h3 {
+	@include headers;
+}
+
+input {
+	display: block;
+}
+
+input[type="button"] {
+	background-color: #4078c0;
+	border: none;
+	border-bottom: .5em solid #4061C0;
+	&:hover {
+		cursor: pointer;
+	}
+	&:active {
+		background-color: #4061C0;
+	}
+}
+hr {
+	box-sizing: border-box;
+	border: .1em solid #777;
+	margin: 1em .25em;
+}
+
+/****************
+* class styles
+****************/
+.nav {
+	width: 100%;
+	background-color: lightgrey;
+	float: left;
+	li {
+		padding: 1em;
+	}
+}
+
+.active {
+	color: white;
+	background-color: #606060;
+	a:visited {
+		color: white;
+	}
+}
+
+.login-aside {
+	position: absolute;
+	right: 0;
+	margin-right: -15%;
+	height: 100%;
+	background-color: #333;
+	width: 15%;
+	h3 {
+		margin-top: 1em;
+		color: white;
+	}
+	input {
+		color: #222;
+		padding: .5em;
+		margin: 1em;
+		width: 100%;
+		box-sizing: border-box;
+		&[type="button"] {
+			color: white;
+			padding: 1em 2em;
+		}
+	}
+}
+
+.slide-in-right {
+	margin-right: 0;
+	transition: all linear 0.5s;
+}
+
+.slide-out-right {
+	margin-right: -15%;
+	transition: all linear 0.5s;
+}
+
+.shrink-nav {
+	width: 85%;
+	transition: all linear 0.5s;
+}
+
+.grow-nav {
+	width: 100%;
+	transition: all linear 0.5s;
+}
