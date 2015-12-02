@@ -25,7 +25,9 @@ Now install with ` npm install && bower install`
 
 ### Usage
 
-Navigate to the base directory in your terminal ` cd path/to/folder `, then run ` gulp `. This should open a new browser tab. 
+Navigate to the base directory in your terminal ` cd path/to/folder `, then run ` gulp `. This should open a new browser tab.
+
+To run karma and jasmine tests, make sure you have navigated in your terminal to the cloned directory and run ` gulp test `
 
 The structure is set and files are being watched. When you change a file and save, the browser should reload with the updated changes.
 
