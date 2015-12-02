@@ -1,4 +1,3 @@
-/* jshint node: true */
 'use strict';
 
 var express = require('express');
@@ -7,7 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-//var router = require('./server/routes/index');
+//var router = require('./server/routes/api');
 
 var app = express();
 

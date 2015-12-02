@@ -1,5 +1,3 @@
-/* jshint node: true */
-/* jshint jasmine: true */
 'use strict';
 var request = require('supertest');
 

@@ -1,6 +1,3 @@
-/* jshint node: true */
-/* jshint jasmine: true */
-
 describe('showLogin', function () {
 	var $compile, $rootScope;
 

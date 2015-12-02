@@ -1,6 +1,3 @@
-/* jshint node: true */
-/* jshint jasmine: true */
-
 'use strict';
 
 describe('LoginCtrl', function() {
