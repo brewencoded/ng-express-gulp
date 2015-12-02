@@ -1,5 +1,5 @@
 # ng-express-gulp
-Base structure for an angular, gulp, and express project with browser-sync and gulp-nodemon for live previews.
+Base structure for an angular, gulp, and express project with browser-sync and gulp-nodemon for live previews. Also contains karma and jasmine test for server and client testing.
 
 ### Install
 
@@ -36,3 +36,5 @@ The structure is set and files are being watched. When you change a file and sav
 * semantic versioning
 
 * commandline scaffolding
+
+* login using json web token authentication and passport for social media logins.
