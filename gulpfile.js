@@ -13,22 +13,33 @@ var gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     cache = require('gulp-cache'),
     minify = require('gulp-minify-css'),
-    mocha = require('gulp-mocha');
+    karma = require('karma').Server,
+    jasmine = require('gulp-jasmine');
 
 //////////////////////////////////////////////
 // Run Tests
 //////////////////////////////////////////////
-gulp.task('server-test', function () {
-    return gulp.src('src/tests/test-server.js')
-        .pipe(mocha());
+gulp.task('test', ['test-server'], function(done) {
+    new karma({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, done).start();
 });
 
-gulp.task('angular-test', function () {});
+gulp.task('test-server', function() {
+    return gulp.src('tests/server/*.js')
+        .pipe(plumber())
+        .pipe(jasmine());
+});
+
+gulp.task('autotest', function() {
+    return gulp.watch(['build/client/public/js/**/*.js', 'tests/*.js'], ['test']);
+});
 
 //////////////////////////////////////////////
 // Sass
 //////////////////////////////////////////////
-gulp.task('sass', function () {
+gulp.task('sass', function() {
     return gulp.src(['src/client/public/scss/base.scss'])
         .pipe(plumber())
         .pipe(sourcemaps.init())
@@ -43,13 +54,13 @@ gulp.task('sass', function () {
 //////////////////////////////////////////////
 // JS
 //////////////////////////////////////////////
-gulp.task('dev-js', ['bower-js'], function () {
+gulp.task('dev-js', ['bower-js'], function() {
     return gulp.src([
-        'src/client/public/js/*.js',
-        'src/client/public/js/controllers/*.js',
-        'src/client/public/js/directives/*.js',
-        'src/client/public/js/services/*.js'
-    ])
+            'src/client/public/js/*.js',
+            'src/client/public/js/controllers/*.js',
+            'src/client/public/js/directives/*.js',
+            'src/client/public/js/services/*.js'
+        ])
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(concat('app.min.js'))
@@ -58,31 +69,35 @@ gulp.task('dev-js', ['bower-js'], function () {
         .pipe(gulp.dest('build/client/public/js'));
 });
 
-gulp.task('bower-js', ['bower-js-maps'], function () {
+gulp.task('bower-js', ['bower-js-maps'], function() {
     return gulp.src([
-        'src/client/bower/angular/angular.min.js',
-        'src/client/bower/angular-ui-router/release/angular-ui-router.min.js'
-    ])
+            'src/client/bower/angular/angular.min.js',
+            'src/client/bower/angular-ui-router/release/angular-ui-router.min.js'
+        ])
         .pipe(plumber())
         .pipe(concat('libs.min.js'))
         .pipe(gulp.dest('build/client/public/js'));
 });
 
-gulp.task('bower-js-maps', function () {
-	return gulp.src([
-			'src/client/bower/angular/angular.min.js.map'
-		])
-		.pipe(gulp.dest('build/client/public/js'));
+gulp.task('bower-js-maps', function() {
+    return gulp.src([
+            'src/client/bower/angular/angular.min.js.map'
+        ])
+        .pipe(gulp.dest('build/client/public/js'));
 });
 
 //////////////////////////////////////////////
 // Fonts and Images
 //////////////////////////////////////////////
-gulp.task('images', function () {
+gulp.task('images', function() {
     return gulp.src([
-        'src/client/public/images/*'
-    ])
-    	.pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
+            'src/client/public/images/*'
+        ])
+        .pipe(cache(imagemin({
+            optimizationLevel: 3,
+            progressive: true,
+            interlaced: true
+        })))
         .pipe(gulp.dest('build/client/public/images'))
         .pipe(browserSync.stream());
 });
@@ -90,12 +105,12 @@ gulp.task('images', function () {
 //////////////////////////////////////////////
 // Server Files
 //////////////////////////////////////////////
-gulp.task('server-files', function () {
+gulp.task('server-files', function() {
     return gulp.src([
-        'src/index.js',
-        'src/server/**/*',
-        'src/bin/**/*'
-    ], {
+            'src/index.js',
+            'src/server/**/*',
+            'src/bin/**/*'
+        ], {
             base: './src'
         })
         .pipe(plumber())
@@ -105,7 +120,7 @@ gulp.task('server-files', function () {
 //////////////////////////////////////////////
 // Move templates
 //////////////////////////////////////////////
-gulp.task('templates', function () {
+gulp.task('templates', function() {
     return gulp.src('src/client/public/templates/**/*', {
             base: 'src/client/public'
         })
@@ -116,7 +131,7 @@ gulp.task('templates', function () {
 //////////////////////////////////////////////
 // Move index
 //////////////////////////////////////////////
-gulp.task('index', function () {
+gulp.task('index', function() {
     return gulp.src('src/client/public/index.html')
         .pipe(plumber())
         .pipe(gulp.dest('build/client/public'));
@@ -125,7 +140,7 @@ gulp.task('index', function () {
 //////////////////////////////////////////////
 // Dev Server
 //////////////////////////////////////////////
-gulp.task('browser-sync', ['nodemon'], function () {
+gulp.task('browser-sync', ['nodemon'], function() {
     browserSync.init(null, {
         // informs browser-sync to proxy our expressjs app which would run at the following location
         proxy: 'http://localhost:3000',
@@ -142,7 +157,7 @@ gulp.task('browser-sync', ['nodemon'], function () {
     gulp.watch('src/client/public/images/*', ['images']).on('change', browserSync.reload);
 });
 
-gulp.task('nodemon', function (cb) {
+gulp.task('nodemon', function(cb) {
     var called = false;
     return nodemon({
             // nodemon our expressjs server
@@ -169,7 +184,7 @@ gulp.task('nodemon', function (cb) {
 //////////////////////////////////////////////
 // Builds
 //////////////////////////////////////////////
-gulp.task('default', ['dist'], function () {
+gulp.task('default', ['dist'], function() {
     gulp.start('browser-sync');
 });
 gulp.task('dist', ['server-files', 'sass', 'dev-js', 'images', 'templates', 'index']);

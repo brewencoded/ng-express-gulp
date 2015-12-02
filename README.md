@@ -31,9 +31,6 @@ The structure is set and files are being watched. When you change a file and sav
 
 ### Coming Soon
 
-
-* mocha tests
-
 * semantic versioning
 
 * commandline scaffolding
