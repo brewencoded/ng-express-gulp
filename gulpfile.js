@@ -29,7 +29,9 @@ gulp.task('test', ['test-server'], function(done) {
 gulp.task('test-server', function() {
     return gulp.src('tests/server/*.js')
         .pipe(plumber())
-        .pipe(jasmine());
+        .pipe(
+            jasmine({ verbose: true })
+        );
 });
 
 gulp.task('autotest', function() {
