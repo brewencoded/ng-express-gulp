@@ -1,6 +1,7 @@
 'use strict';
 
 describe('LoginCtrl', function() {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 
     beforeEach(module('myApp'));
     beforeEach(module('ui.router'));
@@ -12,20 +13,36 @@ describe('LoginCtrl', function() {
         rootScope = $rootScope;
     }));
 
-    describe('toggleLogin', function () {
+    describe('controller', function() {
+        var $scope, loginCtrl;
+        beforeEach(function() {
+            $scope = {};
+            loginCtrl = $controller('LoginCtrl', {
+                $scope: $scope
+            });
+        });
 
-    	var $scope, loginCtrl;
+        it('should be defined', function() {
+            expect(loginCtrl).toBeDefined();
+        });
+    });
 
-    	beforeEach(function () {
-    		$scope = {};
-    		loginCtrl = $controller('loginCtrl', { $scope: $scope });
-    		spyOn(rootScope, '$broadcast').and.callThrough();
-    	});
+    describe('toggleLogin', function() {
 
-    	it('should broadcast a requestLoginEvent', function () {
-    		$scope.toggleLogin();
-    		expect(rootScope.$broadcast).toHaveBeenCalledWith('requestLoginEvent');
-    	});
+        var $scope, loginCtrl;
+
+        beforeEach(function() {
+            $scope = {};
+            loginCtrl = $controller('LoginCtrl', {
+                $scope: $scope
+            });
+            spyOn(rootScope, '$broadcast').and.callThrough();
+        });
+
+        it('should broadcast a requestLoginEvent', function() {
+            $scope.toggleLogin();
+            expect(rootScope.$broadcast).toHaveBeenCalledWith('requestLoginEvent');
+        });
 
     }); //describe toggleLogin
 
