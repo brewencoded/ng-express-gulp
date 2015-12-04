@@ -11,28 +11,33 @@ describe('formValidation directive', function() {
     beforeEach(module('myApp'));
     beforeEach(module('ui.router'));
 
-    beforeEach(inject(function(_$compile_, _$rootScope_) {
+    beforeEach(inject(function(_$rootScope_, _$compile_ ) {
         $compile = _$compile_;
         $scope = _$rootScope_.$new();
     }));
-    describe('login', function() {
-    	var element, controller;
 
-    	beforeEach(function (done) {
-    		element = $compile('<form form-validation type="\'login\'">' 
+    describe('login', function() {
+    	var $element, $controller;
+
+    	beforeEach(function () {
+    		$element = $compile('<form form-validation type="\'login\'">'
     								+ '<input type="email" value="test@example.com">'
-    								+ '<input type="password" value="password">'
+    								+ '<input type="password" value="password">',
+    								+ '<input type="submit" value="login">'
     							+ '</form>')($scope);
-    		$scope.digest();
-            controller = element.controller;
+    		$scope.$digest();
+            $controller = $element.controller;
     	});
 
     	// on keyup the input should be read tested against emptiness and it's respective error message should be shown 
     	// if input is empty set nghide to true, if has value set nghide to false
-    	// check value of ng-hide OR check if hasClass('ng-hide') is true 
+    	// check value of ng-hide OR check if hasClass('ng-hide') is true
         describe('email field', function () {
-            it('should show error if empty', function() {
+            it('adds correct content error element', function() {
                
+            });
+            it('unhides error element when valid', function (done) {
+            	
             });
         });
     });

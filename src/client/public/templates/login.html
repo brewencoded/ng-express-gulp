@@ -1,17 +1,19 @@
 <div class="login-aside" show-login>
     <h3>Login</h3>
     <form form-validation type="'login'">
+    	<p class="form-error"></p>
         <input type="email" name="login-email" placeholder="email" required>
         <input type="password" name="login-password" placeholder="password" required>
-        <input type="button" id="login-btn" value="Submit" >
+        <input type="submit" id="login-btn" value="Submit" >
     </form>
     <hr>
     <h3>Register</h3>
-    <!-- TODO: add ng-submit directive that will be called by for-validation directive -->
+    <!-- TODO: add ng-submit directive that will be called by form-validation directive -->
     <form form-validation type="'register'">
+    	<p class="form-error"></p>
         <input type="email" name="register-email" placeholder="email" required>
         <input type="password" name="register-password" placeholder="password" required>
         <input type="password" name="password-verify" placeholder="password verify" required>
-        <input type="button" id="register-btn" value="Submit" >
+        <input type="submit" id="register-btn" value="Submit" >
     </form>
 </div>
