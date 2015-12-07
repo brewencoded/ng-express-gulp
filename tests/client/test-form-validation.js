@@ -11,34 +11,42 @@ describe('formValidation directive', function() {
     beforeEach(module('myApp'));
     beforeEach(module('ui.router'));
 
-    beforeEach(inject(function(_$rootScope_, _$compile_ ) {
+    beforeEach(inject(function(_$rootScope_, _$compile_) {
         $compile = _$compile_;
         $scope = _$rootScope_.$new();
     }));
 
-    describe('login', function() {
-    	var $element, $controller;
+    describe('register', function() {
+        var $element, $controller, testForm;
 
-    	beforeEach(function () {
-    		$element = $compile('<form form-validation type="\'login\'">'
-    								+ '<input type="email" value="test@example.com">'
-    								+ '<input type="password" value="password">',
-    								+ '<input type="submit" value="login">'
-    							+ '</form>')($scope);
-    		$scope.$digest();
-            $controller = $element.controller;
-    	});
+        beforeEach(function() {
+            testForm = angular.element('<form name="form" form-validate>' + '<p class="form-error">{{ message.error }}</p>' + '<input type="email" ng-model="forms.register.email" name="email" placeholder="email">' + '<input type="password" ng-model="forms.register.password" name="register-password" placeholder="password" ng-minlength="6">' + '<input type="password" ng-model="forms.register.passwordVerify" name="password-verify" placeholder="password verify" ng-minlength="6">' + '<input type="submit" id="login-btn" value="Submit" >' + '</form>');
+            $element = $compile(testForm)($scope);
+            $scope.$digest();
 
-    	// on keyup the input should be read tested against emptiness and it's respective error message should be shown 
-    	// if input is empty set nghide to true, if has value set nghide to false
-    	// check value of ng-hide OR check if hasClass('ng-hide') is true
-        describe('email field', function () {
+        });
+
+        // on keyup the input should be read tested against emptiness and it's respective error message should be shown 
+        // if input is empty set nghide to true, if has value set nghide to false
+        // check value of ng-hide OR check if hasClass('ng-hide') is true
+        describe('individual field', function() {
             it('adds correct content error element', function() {
-               
+                var input = $scope.form.email;
+                input.$viewValue = "test";
+                $scope.$apply();
+                
+                //expect($scope.errorMessage === 'Invalid email format').toEqual(true);
             });
-            it('unhides error element when valid', function (done) {
-            	
+            it('does not add error if format is valid', function() {
+
             });
+            it('unhides error element when valid', function() {
+
+            });
+        });
+
+        describe('all fields', function() {
+
         });
     });
 

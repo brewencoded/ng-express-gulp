@@ -185,7 +185,7 @@ gulp.task('nodemon', function(cb) {
 //////////////////////////////////////////////
 // Builds
 //////////////////////////////////////////////
-gulp.task('default', ['dist'], function() {
+gulp.task('default', ['build'], function() {
     gulp.start('browser-sync');
 });
-gulp.task('dist', ['server-files', 'sass', 'dev-js', 'images', 'templates', 'index']);
+gulp.task('build', ['server-files', 'sass', 'dev-js', 'images', 'templates', 'index']);

@@ -46,10 +46,11 @@ h3 {
 }
 
 input {
+	outline: none;
 	display: block;
 }
 
-input[type="button"] {
+input[type="submit"] {
 	background-color: #4078c0;
 	border: none;
 	border-bottom: .5em solid #4061C0;
@@ -64,6 +65,10 @@ hr {
 	box-sizing: border-box;
 	border: .1em solid #777;
 	margin: 1em .25em;
+}
+
+p {
+	font-size: 1em;
 }
 
 /****************
@@ -98,12 +103,11 @@ hr {
 		color: white;
 	}
 	input {
-		color: #222;
-		padding: .5em;
-		margin: 1em;
-		width: 100%;
+		width: 90%;
+		padding: 1em;
+		margin: 1em 5%;
 		box-sizing: border-box;
-		&[type="button"] {
+		&[type="submit"] {
 			color: white;
 			padding: 1em 2em;
 		}
@@ -128,4 +132,16 @@ hr {
 .grow-nav {
 	width: 100%;
 	transition: all linear 0.5s;
+}
+
+input.ng-valid.ng-dirty {
+	border: .35em solid #4BB54B;
+}
+
+.form-error {
+	line-height: 2em;
+	text-align: center;
+	color: white;
+	background-color: red;
+	margin: 0 .5em;
 }
