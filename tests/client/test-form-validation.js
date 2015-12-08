@@ -17,25 +17,23 @@ describe('formValidation directive', function() {
     }));
 
     describe('register', function() {
-        var $element, $controller, testForm;
+        var $element, $controller, testForm, form;
 
         beforeEach(function() {
-            testForm = angular.element('<form name="form" form-validate>' + '<p class="form-error">{{ message.error }}</p>' + '<input type="email" ng-model="forms.register.email" name="email" placeholder="email">' + '<input type="password" ng-model="forms.register.password" name="register-password" placeholder="password" ng-minlength="6">' + '<input type="password" ng-model="forms.register.passwordVerify" name="password-verify" placeholder="password verify" ng-minlength="6">' + '<input type="submit" id="login-btn" value="Submit" >' + '</form>');
+            testForm = angular.element('<form name="form" form-validate>' + '<p class="form-error">{{ message.error }}</p>' + '<input type="email" ng-model="register.email" name="email" placeholder="email">' + '<input type="password" ng-model="register.password" name="register-password" placeholder="password" ng-minlength="6">' + '<input type="password" ng-model="register.passwordVerify" name="password-verify" placeholder="password verify" ng-minlength="6">' + '<input type="submit" id="login-btn" value="Submit" >' + '</form>');
+            
             $element = $compile(testForm)($scope);
             $scope.$digest();
 
         });
 
-        // on keyup the input should be read tested against emptiness and it's respective error message should be shown 
-        // if input is empty set nghide to true, if has value set nghide to false
-        // check value of ng-hide OR check if hasClass('ng-hide') is true
         describe('individual field', function() {
             it('adds correct content error element', function() {
-                var input = $scope.form.email;
-                input.$viewValue = "test";
+                /*var input = testForm.find('input')[0];
+                var angInput = angular.element(input);
+                angInput.val('test');
                 $scope.$apply();
-                
-                //expect($scope.errorMessage === 'Invalid email format').toEqual(true);
+                expect($scope.message.error === 'Invalid email format').toEqual(true);*/
             });
             it('does not add error if format is valid', function() {
 
