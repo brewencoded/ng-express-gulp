@@ -1,6 +1,10 @@
 angular.module('myApp')
-	.factory('AuthSvc', function() { 
-		return { 
-			isLoggedIn: false, 
-		};
-	});
+	.factory('AuthSvc', ['$http', function($http) { 
+		return {
+			isLoggedIn: false,
+            login: function (user, success, error) {
+                $http.post('/login', user)
+                    .then(success, error);
+            }
+        };
+	}]);

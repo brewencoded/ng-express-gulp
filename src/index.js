@@ -6,7 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-//var router = require('./server/routes/api');
+var router = require('./server/routes/api');
 
 var app = express();
 
@@ -21,9 +21,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/client/public')));
 
 /* GET index page. */
-app.use('*', function (req, res) {
-    res.sendFile(__dirname + '/client/public/index.html');
-});
+app.use(router);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

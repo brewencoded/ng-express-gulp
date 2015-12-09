@@ -39,7 +39,7 @@ angular.module('myApp', ['ui.router'])
     }]).run(['$rootScope', '$state', 'AuthSvc',
         function($rootScope, $state, AuthSvc) {
 
-            $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+            /*$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
 
                 var isAuthenticationRequired = toState.data && toState.data.requiresLogin && !User.isLoggedIn;
 
@@ -47,7 +47,7 @@ angular.module('myApp', ['ui.router'])
                     event.preventDefault();
                     $state.go('home.loggedIn.index');
                 }
-            });
+            });*/
 
         }
     ])
