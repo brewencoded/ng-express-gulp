@@ -3,7 +3,8 @@
 
 var express = require('express'),
  	router = express.Router(),
- 	path = require('path');
+ 	path = require('path'),
+ 	validator = require('validator');
 
 /* API routes */
 
