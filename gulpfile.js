@@ -156,6 +156,7 @@ gulp.task('browser-sync', ['nodemon'], function() {
     gulp.watch('src/client/public/templates/**/*.html', ['templates']).on('change', browserSync.reload);
     gulp.watch('src/client/public/index.html', ['index']).on('change', browserSync.reload);
     gulp.watch('src/client/public/images/*', ['images']).on('change', browserSync.reload);
+    gulp.watch('src/server/**/*', ['server-files']);
 });
 
 gulp.task('nodemon', function(cb) {
@@ -163,7 +164,7 @@ gulp.task('nodemon', function(cb) {
     return nodemon({
             // nodemon our expressjs server
             script: 'build/bin/www',
-            watch: ['src/index.js']
+            watch: ['src/index.js', 'src/server/**/*']
         })
         .on('start', function onStart() {
             // ensure start only got called once
