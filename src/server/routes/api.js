@@ -2,52 +2,100 @@
 'use strict';
 
 var express = require('express'),
- 	router = express.Router(),
- 	path = require('path'),
- 	validator = require('validator'),
- 	bodyParser = require('body-parser'),
- 	passport = require('passport'),
- 	LocalStrategy = require('passport-local').Strategy,
-	jwtStrategy = require('passport-jwt').Strategy,
-	bcrypt = require('bcrypt-nodejs');
+    router = express.Router(),
+    path = require('path'),
+    validator = require('validator'),
+    bodyParser = require('body-parser'),
+    passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy,
+    cipher = require('../cipherService');
 
 var Model = {
-	User: require('../models/user')
+    User: require('../models/user')
 };
 
 /**
  * Passport configuration
  */
 var EXPIRES_IN_MINUTES = 60 * 24;
-var SECRET = process.env.tokenSecret || "ThisIsAVeryInsecureSecretToken";
+var SECRET = process.env.tokenSecret || "ThisIsAVeryInsecureTokenSecret";
 var ALGORITHM = "HS256";
 var ISSUER = "";
 var AUDIENCE = "";
 
 // Local strategy
 var LOCAL_STRATEGY = {
-  usernameField: 'email',
-  passwordField: 'password',
-  passReqToCallback: false
+    usernameField: 'email',
+    passwordField: 'password',
+    passReqToCallback: false
 };
 
-// Jwt strategy
-var JWT_STRATEGY = {
-  secretOrKey: SECRET,
-  issuer : ISSUER,
-  audience: AUDIENCE,
-  passReqToCallback: false
-};
+passport.use(
+    new LocalStrategy({
+            // by default, local strategy uses username and password, we will override with email
+            usernameField: 'email',
+            passwordField: 'password'
+        },
+        function(username, password, done) {
+            var user = {
+                email: 'test',
+                password: 'password'
+            };
+            return done(null, user, {});
+        }
+    ));
 
 /* API routes */
 
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({extended: true}));
+router.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 // Authentication routes
 router.post('/login', function(req, res, next) {
-	console.log(req.body);
-	res.send('recieved request');
+    passport.authenticate('local', function(err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.status(401).json({
+                error: 'message'
+            });
+        }
+
+        //user has authenticated correctly thus we create a JWT token
+
+        var token = cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE);
+        res.status(200).json({
+            token: token
+        });
+
+    })(req, res, next);
+});
+
+router.post('/register', function(req, res, next) {
+    var userName = req.body.email;
+    var password = req.body.password;
+    var passwordVerify = req.body.passwordVerify;
+
+    cipher.hashPassword(password, function(salt, hash) {
+        new Model.User({
+            username: userName,
+            password: hash,
+            salt: salt
+        }).then(function(model) {
+
+            cipher.createToken(model, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
+                res.status(200).json({
+                    token: token
+                });
+            });
+
+        });
+    });
+    console.log(req.body);
+    res.status(200).json(req.body);
 });
 
 //Send back to index to handle 404

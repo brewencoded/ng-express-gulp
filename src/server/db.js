@@ -1,10 +1,10 @@
 var knex = require('knex')({
   client: 'mysql',
   connection: {
-    host     : 'locahost',
+    host     : '127.0.0.1',
     user     : 'root',
     password : 'Password1!',
-    database : 'User',
+    database : 'Users',
     charset  : 'utf8'
   }
 });

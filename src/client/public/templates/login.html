@@ -11,9 +11,9 @@
     <!-- TODO: add ng-submit directive that will be called by form-validation directive -->
     <form ng-controller= "RegisterCtrl" form-validate ng-submit="register()" novalidate>
     	<p class="form-error">{{ message.error }}</p>
-        <input type="email" ng-model="register.email" name="register-email" placeholder="email">
-        <input type="password" ng-model="register.password" name="register-password" placeholder="password" ng-minlength="6">
-        <input type="password" ng-model="register.passwordVerify" name="password-verify" placeholder="password verify" ng-minlength="6">
+        <input type="email" ng-model="registerForm.email" name="register-email" placeholder="email">
+        <input type="password" ng-model="registerForm.password" name="register-password" placeholder="password" ng-minlength="6">
+        <input type="password" ng-model="registerForm.passwordVerify" name="password-verify" placeholder="password verify" ng-minlength="6">
         <input type="submit" id="register-btn" value="Submit">
     </form>
 </div>
