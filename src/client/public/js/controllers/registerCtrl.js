@@ -1,30 +1,39 @@
 angular.module('myApp')
-    .controller('RegisterCtrl', ['$scope', 'ValidationSvc', 'AuthSvc', function($scope, ValidationSvc, AuthSvc) {
-        'use strict';
+    .controller('RegisterCtrl', ['$scope', 'AuthSvc', '$window',
+        function($scope, AuthSvc, $window) {
+            'use strict';
 
-        var errors = {
-            allRequired: 'All fields are required'
-        };
+            $scope.registerForm = {};
+            $scope.message = {
+                register: {error: ''}
+            };
 
-        $scope.registerForm = {};
-        $scope.message = {};
-
-        $scope.register = function() {
-            var validForm = ValidationSvc.validate('register', $scope.registerForm);
-                console.log(validForm);
-                if (!validForm) {
-                    $scope.message.error = errors.allRequired;
+            $scope.register = function() {
+                if ($scope.message.error !== {} || $scope.message.error !== '' && !isEmpty(registerForm)) {
+                    console.log('errors!');
                 } else {
-                    AuthSvc.register($scope.registerForm, 
-                        function (response, status, headers, config) {
-                            //$window.localStorage.token = response.data.token;
+                    AuthSvc.register($scope.registerForm,
+                        function(response, status, headers, config) {
+                            if (response.data.code === 'ER_DUP_ENTRY') {
+                                $scope.message.error = 'That email address is already on file, try logging in';
+                                $scope.message.hasError = true;
+                            } else {
+                                $window.localStorage.token = response.data.token;
+                                 $scope.message.error = '';                            }
+                            
                             console.log(response);
-                        }, 
-                        function (response) {
+                        },
+                        function(response) {
+                            $scope.message.error = 'Sorry, something went wrong, try again later.';
                             // Erase the token if the user fails to log in
-                            //delete $window.localStorage.token;
+                            delete $window.localStorage.token;
                             console.log(response);
                         });
                 }
-        };
-    }]);
+            };
+
+            function isEmpty() {
+                return false;
+            }
+        }
+    ]);

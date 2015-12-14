@@ -6,11 +6,16 @@ module.exports = {
      * Hash the password field of the passed user.
      */
     hashPassword: function(password, cb) {
-        bcrypt.genSalt(10, function(salt) {
-            bcrypt.hash(password, salt, function() {
-                console.log('hashing');
-            }, function(hash) {
-                cb(salt, hash);
+        bcrypt.genSalt(10, function(err, salt) {
+            if (err) {
+                return console.error(err);
+            }
+
+            bcrypt.hash(password, salt, null, function(err, hash) {
+                if (err) {
+                    return console.error(err);
+                }
+                cb(hash, salt);
             });
         });
     },
@@ -33,7 +38,7 @@ module.exports = {
             },
             secret, {
                 algorithm: algorithm,
-                expiresInMinutes: expiresInMinutes,
+                expiresIn: expiresInMinutes,
                 issuer: issuer,
                 audience: audience
             },

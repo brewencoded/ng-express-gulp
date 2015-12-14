@@ -1,23 +1,20 @@
 angular.module('myApp')
-    .controller('LoginCtrl', ['$scope', '$rootScope', 'AuthSvc', 'ValidationSvc', '$window',
-        function($scope, $rootScope, AuthSvc, ValidationSvc, $window) {
+    .controller('LoginCtrl', ['$scope', '$rootScope', 'AuthSvc', '$window',
+        function($scope, $rootScope, AuthSvc, $window) {
             'use strict';
 
-            var errors = {
-                allRequired: 'All fields are required'
-            };
-
             $scope.loginForm = {};
-            $scope.message = {};
+            $scope.message = {
+                login: {error: ''}
+            };
 
             $scope.toggleLogin = function() {
                 $rootScope.$broadcast('requestLoginEvent');
             };
 
             $scope.login = function() {
-                var validForm = ValidationSvc.validate('login', $scope.loginForm);
-                if (!validForm) {
-                	$scope.message.error = errors.allRequired;
+                if ($scope.message.error !== {} || $scope.message.error !== '') {
+                	console.log('errors!');
                 } else {
                 	AuthSvc.login($scope.loginForm, 
                 		function (response, status, headers, config) {

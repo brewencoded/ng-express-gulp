@@ -135,12 +135,11 @@ p {
 	transition: all linear 0.5s;
 }
 
-input.ng-valid.ng-dirty {
+.form-valid.ng-dirty {
 	border: .35em solid #4BB54B;
 }
 
 .form-error {
-	line-height: 2.5em;
 	text-align: center;
 	color: white;
 	background-color: $error;

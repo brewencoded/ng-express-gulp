@@ -22,9 +22,7 @@ angular.module('myApp')
                 return config;
             },
             response: function(response) {
-                if (response.status === 401) {
-                    // handle the case where the user is not authenticated
-                }
+                //if (response.status === 401) {}
                 return response || $q.when(response);
             }
         };

@@ -80,11 +80,12 @@ router.post('/register', function(req, res, next) {
     var passwordVerify = req.body.passwordVerify;
 
     cipher.hashPassword(password, function(salt, hash) {
+    	console.log(salt + ' : ' + hash);
         new Model.User({
             username: userName,
             password: hash,
             salt: salt
-        }).then(function(model) {
+        }).save().then(function(model) {
 
             cipher.createToken(model, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
                 res.status(200).json({
@@ -92,10 +93,10 @@ router.post('/register', function(req, res, next) {
                 });
             });
 
+        }).catch(function (err) {
+        	res.send(err);
         });
     });
-    console.log(req.body);
-    res.status(200).json(req.body);
 });
 
 //Send back to index to handle 404

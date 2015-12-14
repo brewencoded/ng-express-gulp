@@ -1,6 +1,8 @@
 # ng-express-gulp
 Base structure for an angular, gulp, and express project with browser-sync and gulp-nodemon for live previews. Also contains karma and jasmine test for server and client testing.
 
+**Warning**: This is currently under **heavy** active development and will be very unstable until the app structure is stabilized. 
+
 ### Install
 
 You **must** have node installed first. Download [Here](https://nodejs.org/) or use [nvm](https://github.com/creationix/nvm)
