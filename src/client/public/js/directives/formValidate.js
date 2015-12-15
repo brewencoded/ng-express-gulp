@@ -11,9 +11,9 @@ angular.module('myApp')
         return {
             link: function(scope, element, attrs) {
                 scope.message = message;
+                scope.hasErrors = false;
                 var formElements = element.find('input');
                 var errorElement = attrs.formtype === 'register' ? scope.message.register : scope.message.login;
-                console.log(scope.message);
                 for (var i = 0; i < formElements.length; i++) {
                     switch (formElements[i].getAttribute('type')) {
                         case 'email':
@@ -30,10 +30,12 @@ angular.module('myApp')
 
         function promptUser(scope, text, errorElement) {
             if (text === 'clear') {
+                scope.hasErrors = false;
                 scope.$apply(function() {
                     errorElement.error = '';
                 });
             } else {
+                scope.hasErrors = true;
                 scope.$apply(function() {
                     errorElement.error += text;
                     console.log(scope.message.register.error);

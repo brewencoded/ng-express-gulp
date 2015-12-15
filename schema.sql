@@ -6,12 +6,6 @@ use Users;
 
 drop table if exists tbl_Users;
 
-create table if not exists tbl_Users(
-   userId integer primary key auto_increment,
-   username varchar(100) unique,
-   password varchar(100)
-)engine=innodb;
-
 CREATE TABLE tbl_Users (
   userId int(11) NOT NULL AUTO_INCREMENT,
   username varchar(100) DEFAULT NULL,
@@ -22,7 +16,7 @@ CREATE TABLE tbl_Users (
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 CREATE TABLE tbl_Roles (
-  roleId int(11) NOT NULL,
+  roleId int(11) NOT NULL AUTO_INCREMENT,
   role varchar(25) NOT NULL,
   PRIMARY KEY (roleId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -35,3 +29,6 @@ CREATE TABLE tbl_UserRoles (
   CONSTRAINT tbl_userroles_ibfk_1 FOREIGN KEY (userId) REFERENCES tbl_Users (userId),
   CONSTRAINT tbl_userroles_ibfk_2 FOREIGN KEY (roleId) REFERENCES tbl_Roles (roleId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO tbl_Roles (role) 
+  VALUES("user"), ("admin");

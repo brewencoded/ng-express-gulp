@@ -13,9 +13,10 @@ angular.module('myApp')
             };
 
             $scope.login = function() {
-                if ($scope.message.error !== {} || $scope.message.error !== '') {
-                	console.log('errors!');
+                if ($scope.message.login.error !== {} || $scope.message.login.error !== '') {
+                	$scope.message.login.error += 'Missing required fields\n';
                 } else {
+                	$scope.message.login.error = '';
                 	AuthSvc.login($scope.loginForm, 
                 		function (response, status, headers, config) {
                 			$window.localStorage.token = response.data.token;

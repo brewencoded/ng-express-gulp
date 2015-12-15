@@ -5,22 +5,29 @@ angular.module('myApp')
 
             $scope.registerForm = {};
             $scope.message = {
-                register: {error: ''}
+                register: {
+                    error: ''
+                }
             };
 
             $scope.register = function() {
-                if ($scope.message.error !== {} || $scope.message.error !== '' && !isEmpty(registerForm)) {
-                    console.log('errors!');
+                var empty = isEmpty($scope.registerForm);
+                if ($scope.message.register.error !== '' || empty) {
+                    console.log($scope.message.register);
+                   $scope.message.register.error += 'Missing required fields\n';
                 } else {
+                    $scope.message.register.error += '';
                     AuthSvc.register($scope.registerForm,
                         function(response, status, headers, config) {
                             if (response.data.code === 'ER_DUP_ENTRY') {
                                 $scope.message.error = 'That email address is already on file, try logging in';
-                                $scope.message.hasError = true;
+                            } else if (response.data.message === 'No Rows Updated') {
+                                $scope.message.error = 'Something went wrong try again later';
                             } else {
                                 $window.localStorage.token = response.data.token;
-                                 $scope.message.error = '';                            }
-                            
+                                $scope.message.error = '';
+                            }
+
                             console.log(response);
                         },
                         function(response) {
@@ -32,7 +39,18 @@ angular.module('myApp')
                 }
             };
 
-            function isEmpty() {
+            function isEmpty(fields) {
+                
+                if(Object.keys(fields).length > 0) {
+                    angular.forEach(fields, function (value, key) {
+                        console.log(value);
+                        if(value.trim() === '' || value === undefined) {
+                            return true;
+                        }
+                    });
+                } else {
+                    return true;
+                }
                 return false;
             }
         }

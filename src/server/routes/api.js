@@ -10,10 +10,7 @@ var express = require('express'),
     LocalStrategy = require('passport-local').Strategy,
     cipher = require('../cipherService');
 
-var Model = {
-    User: require('../models/user')
-};
-
+var Model = require('../models/Users');
 /**
  * Passport configuration
  */
@@ -78,26 +75,58 @@ router.post('/register', function(req, res, next) {
     var userName = req.body.email;
     var password = req.body.password;
     var passwordVerify = req.body.passwordVerify;
+    var user;
 
     cipher.hashPassword(password, function(salt, hash) {
-    	console.log(salt + ' : ' + hash);
+        console.log(salt + ' : ' + hash);
         new Model.User({
-            username: userName,
-            password: hash,
-            salt: salt
-        }).save().then(function(model) {
+                username: userName,
+                password: hash,
+                salt: salt
+            })
+            .save()
+            .then(function(model) {
+                var id = model.get('userId');
+                console.log(id);
+                user = model;
+                console.log(model);
 
+                addRole(1, id).then(function() {
+		            cipher.createToken(model, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
+		                res.status(200).json({
+		                    token: token
+		                });
+		            });
+		        })
+		        .catch(function(err) {
+		            res.send(err);
+		        });
+                 
+            })
+            .catch(function(err) {
+                res.send(err);
+            });
+    });
+});
+
+function addRole(role, id) {
+	return Model.UserRole
+		.forge({
+            userId: id,
+            roleId: 1
+        })
+        .save()
+        .then(function() {
             cipher.createToken(model, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
                 res.status(200).json({
                     token: token
                 });
             });
-
-        }).catch(function (err) {
-        	res.send(err);
+        })
+        .catch(function(err) {
+            res.send(err);
         });
-    });
-});
+}
 
 //Send back to index to handle 404
 router.get("*", function(req, res) {
