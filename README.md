@@ -39,4 +39,6 @@ The structure is set and files are being watched. When you change a file and sav
 
 * commandline scaffolding
 
-* login using json web token authentication and passport for social media logins.
+* passport for social media logins.
+
+* refresh tokens
