@@ -7,15 +7,17 @@ var express = require('express'),
     validator = require('validator'),
     bodyParser = require('body-parser'),
     passport = require('passport'),
+    cipher = require('../cipherService'),
     LocalStrategy = require('passport-local').Strategy,
-    cipher = require('../cipherService');
+	bcrypt = require('bcrypt-nodejs'),
+	secret = require('../secret');
 
 var Model = require('../models/Users');
 /**
  * Jwt configuration
  */
 var EXPIRES_IN_MINUTES = 60 * 24;
-var SECRET = process.env.tokenSecret || "ThisIsAVeryInsecureTokenSecret";
+var SECRET = process.env.tokenSecret || require('../secret.js');
 var ALGORITHM = "HS256";
 var ISSUER = "";
 var AUDIENCE = "";
@@ -28,18 +30,29 @@ var LOCAL_STRATEGY = {
 };
 
 // TODO: implement login
-passport.use(
-    new LocalStrategy({
-            // by default, local strategy uses username and password, we will override with email
-            usernameField: 'email',
-            passwordField: 'password'
-        },
+passport.use(new LocalStrategy(
+		{
+			usernameField: 'email'
+		},
         function(username, password, done) {
-            var user = {
-                email: 'test',
-                password: 'password'
-            };
-            return done(null, user, {});
+        	console.log('searching ' + username);
+            new Model.User({
+                    'username': username
+                })
+                .fetch() //TODO: add withRelated fields
+                .then(function(user) {
+                	console.log(user);
+                    if (!user) {
+                    	return done(null, false, {message: 'Username and/or password combination invalid.'});
+                    } else {
+                    	var matches = bcrypt.compareSync(password, user.get('password'));
+                    	if (matches) {
+                    		return done(null, user);
+                    	} else {
+                    		return done(null, false, {message: 'Username and/or password combination invalid.'});
+                    	}
+                    }
+                });
         }
     ));
 
@@ -58,16 +71,15 @@ router.post('/login', function(req, res, next) {
         }
         if (!user) {
             return res.status(401).json({
-                error: 'message'
+                error: err
             });
         }
-
+        
         //user has authenticated correctly thus we create a JWT token
-
-        /*var token = cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE);
+        var token = cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE);
         res.status(200).json({
             token: token
-        });*/
+        });
 
     })(req, res, next);
 });
@@ -78,7 +90,7 @@ router.post('/register', function(req, res) {
     var passwordVerify = req.body.passwordVerify;
     var user;
 
-    cipher.hashPassword(password, function(salt, hash) {
+    cipher.hashPassword(password, function(hash, salt) {
         console.log(salt + ' : ' + hash);
         //create user
         Model.User
@@ -100,10 +112,15 @@ router.post('/register', function(req, res) {
                     })
                     .save()
                     .then(function(ur) {
-                        cipher.createToken(model, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
-                        	console.log(ur);
-                        	console.log(token);
-                            res.status(200).json({token: token});
+                        var user = {
+                            login: model.toJSON(),
+                            role: ur.toJSON()
+                        };
+
+                        cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
+                            res.status(200).json({
+                                token: token
+                            });
                         });
                     })
                     .catch(function(err) {
