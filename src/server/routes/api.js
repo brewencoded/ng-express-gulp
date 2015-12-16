@@ -12,7 +12,7 @@ var express = require('express'),
 
 var Model = require('../models/Users');
 /**
- * Passport configuration
+ * Jwt configuration
  */
 var EXPIRES_IN_MINUTES = 60 * 24;
 var SECRET = process.env.tokenSecret || "ThisIsAVeryInsecureTokenSecret";
@@ -27,6 +27,7 @@ var LOCAL_STRATEGY = {
     passReqToCallback: false
 };
 
+// TODO: implement login
 passport.use(
     new LocalStrategy({
             // by default, local strategy uses username and password, we will override with email
@@ -71,7 +72,7 @@ router.post('/login', function(req, res, next) {
     })(req, res, next);
 });
 
-router.post('/register', function(req, res, next) {
+router.post('/register', function(req, res) {
     var userName = req.body.email;
     var password = req.body.password;
     var passwordVerify = req.body.passwordVerify;

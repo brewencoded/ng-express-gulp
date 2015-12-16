@@ -145,7 +145,7 @@ gulp.task('browser-sync', ['nodemon'], function() {
     browserSync.init(null, {
         // informs browser-sync to proxy our expressjs app which would run at the following location
         proxy: 'http://localhost:3000',
-
+        online: true,
         // informs browser-sync to use the following port for the proxied app
         // notice that the default port is 3000, which would clash with our expressjs
         port: 8087
@@ -156,7 +156,6 @@ gulp.task('browser-sync', ['nodemon'], function() {
     gulp.watch('src/client/public/templates/**/*.html', ['templates']).on('change', browserSync.reload);
     gulp.watch('src/client/public/index.html', ['index']).on('change', browserSync.reload);
     gulp.watch('src/client/public/images/*', ['images']).on('change', browserSync.reload);
-    gulp.watch('src/server/**/*', ['server-files']);
 });
 
 gulp.task('nodemon', function(cb) {
@@ -164,7 +163,8 @@ gulp.task('nodemon', function(cb) {
     return nodemon({
             // nodemon our expressjs server
             script: 'build/bin/www',
-            watch: ['src/index.js', 'src/server/**/*']
+            watch: ['src/index.js', 'src/server/**/*'],
+            tasks: 'server-files' 
         })
         .on('start', function onStart() {
             // ensure start only got called once
@@ -173,7 +173,10 @@ gulp.task('nodemon', function(cb) {
             }
             called = true;
         })
-        .on('restart', function onRestart() {
+        .on('change', function () {
+            gulp.start('server-files');
+        })
+        .on('restart', function () {
             // reload connected browsers after a slight delay
             setTimeout(function reload() {
                 browserSync.reload({
