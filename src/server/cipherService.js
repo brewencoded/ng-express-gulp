@@ -33,9 +33,8 @@ module.exports = {
      * @param user
      */
     createToken: function(user, secret, algorithm, expiresInMinutes, issuer, audience, callback) {
-        return jwt.sign({
-                user: user
-            },
+        return jwt.sign(
+            user,
             secret, {
                 algorithm: algorithm,
                 expiresIn: expiresInMinutes,

@@ -28,5 +28,6 @@ var UserRole = DB.Model.extend({
 
 module.exports = {
 	User: User,
-	Role: Role
+	Role: Role,
+	UserRole: UserRole
 };

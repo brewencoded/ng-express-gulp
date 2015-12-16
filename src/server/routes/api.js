@@ -63,10 +63,10 @@ router.post('/login', function(req, res, next) {
 
         //user has authenticated correctly thus we create a JWT token
 
-        var token = cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE);
+        /*var token = cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE);
         res.status(200).json({
             token: token
-        });
+        });*/
 
     })(req, res, next);
 });
@@ -79,7 +79,9 @@ router.post('/register', function(req, res, next) {
 
     cipher.hashPassword(password, function(salt, hash) {
         console.log(salt + ' : ' + hash);
-        new Model.User({
+        //create user
+        Model.User
+            .forge({
                 username: userName,
                 password: hash,
                 salt: salt
@@ -87,21 +89,26 @@ router.post('/register', function(req, res, next) {
             .save()
             .then(function(model) {
                 var id = model.get('userId');
-                console.log(id);
                 user = model;
-                console.log(model);
 
-                addRole(1, id).then(function() {
-		            cipher.createToken(model, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
-		                res.status(200).json({
-		                    token: token
-		                });
-		            });
-		        })
-		        .catch(function(err) {
-		            res.send(err);
-		        });
-                 
+                //create userrole with userid
+                Model.UserRole
+                    .forge({
+                        userId: id,
+                        roleId: 1
+                    })
+                    .save()
+                    .then(function(ur) {
+                        cipher.createToken(model, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
+                        	console.log(ur);
+                        	console.log(token);
+                            res.status(200).json({token: token});
+                        });
+                    })
+                    .catch(function(err) {
+                        res.send(err);
+                    });
+
             })
             .catch(function(err) {
                 res.send(err);
@@ -109,24 +116,6 @@ router.post('/register', function(req, res, next) {
     });
 });
 
-function addRole(role, id) {
-	return Model.UserRole
-		.forge({
-            userId: id,
-            roleId: 1
-        })
-        .save()
-        .then(function() {
-            cipher.createToken(model, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
-                res.status(200).json({
-                    token: token
-                });
-            });
-        })
-        .catch(function(err) {
-            res.send(err);
-        });
-}
 
 //Send back to index to handle 404
 router.get("*", function(req, res) {
