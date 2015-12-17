@@ -19,7 +19,8 @@ angular.module('myApp', ['ui.router'])
                 })
                 .state('user', {
                     abstract: true,
-                    templateUrl: '/templates/user.html'
+                    templateUrl: '/templates/user.html',
+                    controller: 'userInfoCtrl'
                 })
                 .state('user.index', {
                     url: '/',

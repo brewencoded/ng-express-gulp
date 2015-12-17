@@ -9,8 +9,8 @@ var express = require('express'),
     passport = require('passport'),
     cipher = require('../cipherService'),
     LocalStrategy = require('passport-local').Strategy,
-	bcrypt = require('bcrypt-nodejs'),
-	secret = require('../secret');
+    bcrypt = require('bcrypt-nodejs'),
+    secret = require('../secret');
 
 var Model = require('../models/Users');
 /**
@@ -29,32 +29,41 @@ var LOCAL_STRATEGY = {
     passReqToCallback: false
 };
 
-// TODO: implement login
-passport.use(new LocalStrategy(
-		{
-			usernameField: 'email'
-		},
-        function(username, password, done) {
-        	console.log('searching ' + username);
-            new Model.User({
-                    'username': username
-                })
-                .fetch() //TODO: add withRelated fields
-                .then(function(user) {
-                	console.log(user);
-                    if (!user) {
-                    	return done(null, false, {message: 'Username and/or password combination invalid.'});
+// TODO: implement server side validation
+passport.use(new LocalStrategy({
+        usernameField: 'email'
+    },
+    function(username, password, done) {
+        console.log('searching ' + username);
+        new Model.User({
+                'username': username
+            })
+            .fetch({
+                withRelated: ['roles']
+            })
+            .then(function(user) {
+                if (!user) {
+                    return done(null, false, {
+                        message: 'Username and/or password combination invalid.'
+                    });
+                } else {
+                    var matches = bcrypt.compareSync(password, user.get('password'));
+                    if (matches) {
+                        return done(null, user.toJSON());
                     } else {
-                    	var matches = bcrypt.compareSync(password, user.get('password'));
-                    	if (matches) {
-                    		return done(null, user);
-                    	} else {
-                    		return done(null, false, {message: 'Username and/or password combination invalid.'});
-                    	}
+                        return done(null, false, {
+                            message: 'Username and/or password combination invalid.'
+                        });
                     }
+                }
+            })
+            .catch(function(err) {
+                return done(null, false, {
+                    message: 'Something went wrong please try again later.'
                 });
-        }
-    ));
+            });
+    }
+));
 
 /* API routes */
 
@@ -74,11 +83,12 @@ router.post('/login', function(req, res, next) {
                 error: err
             });
         }
-        
+        console.log(user);
         //user has authenticated correctly thus we create a JWT token
         var token = cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE);
         res.status(200).json({
-            token: token
+            token: token,
+            user: user
         });
 
     })(req, res, next);
@@ -91,7 +101,6 @@ router.post('/register', function(req, res) {
     var user;
 
     cipher.hashPassword(password, function(hash, salt) {
-        console.log(salt + ' : ' + hash);
         //create user
         Model.User
             .forge({
@@ -102,7 +111,6 @@ router.post('/register', function(req, res) {
             .save()
             .then(function(model) {
                 var id = model.get('userId');
-                user = model;
 
                 //create userrole with userid
                 Model.UserRole
@@ -112,14 +120,14 @@ router.post('/register', function(req, res) {
                     })
                     .save()
                     .then(function(ur) {
-                        var user = {
-                            login: model.toJSON(),
-                            role: ur.toJSON()
-                        };
+                        var user = model.toJSON();
+                        user.roles = ur.toJSON();
+                        console.log(user);
 
                         cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
                             res.status(200).json({
-                                token: token
+                                token: token,
+                                user: user
                             });
                         });
                     })

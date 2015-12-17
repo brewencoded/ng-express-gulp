@@ -31,7 +31,7 @@ angular.module('myApp')
                             console.log(response);
                         },
                         function(response) {
-                            $scope.message.error = 'Sorry, something went wrong, try again later.';
+                            $scope.message.register.error = 'Sorry, something went wrong, try again later.';
                             // Erase the token if the user fails to log in
                             delete $window.localStorage.token;
                             console.log(response);
