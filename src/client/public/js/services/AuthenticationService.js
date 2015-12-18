@@ -1,7 +1,13 @@
 angular.module('myApp')
     .factory('AuthSvc', ['$http', function($http) {
         return {
-            isLoggedIn: false,
+            isLoggedIn: function (cb) {
+            	$http({method: 'GET', url: '/api/user'})
+                    .then(function (data) {
+                    	console.log(data);
+                    	cb(data);
+                    });
+            },
             login: function(user, success, error) {
                 $http.post('/login', user)
                     .then(success, error);

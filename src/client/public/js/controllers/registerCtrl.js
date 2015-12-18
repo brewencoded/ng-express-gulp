@@ -1,6 +1,6 @@
 angular.module('myApp')
-    .controller('RegisterCtrl', ['$scope', 'AuthSvc', '$window',
-        function($scope, AuthSvc, $window) {
+    .controller('RegisterCtrl', ['$scope', '$rootScope', 'AuthSvc', '$window',
+        function($scope, $rootScope, AuthSvc, $window) {
             'use strict';
 
             $scope.registerForm = {};
@@ -9,6 +9,9 @@ angular.module('myApp')
                     error: ''
                 }
             };
+            $scope.loggedIn = AuthSvc.isLoggedIn(function (data) {
+                    
+                });
 
             $scope.register = function() {
                 var empty = isEmpty($scope.registerForm);

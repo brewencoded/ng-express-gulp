@@ -10,7 +10,10 @@
             <a ui-sref="main.index">Home</a>
         </li>
         <li>
-            <a href="#" id="toggle-login" ng-click="toggleLogin()">Login</a>
+            <a href="#" id="toggle-login" ng-click="toggleLogin()" ng-show="loggedIn">Login</a>
+        </li>
+        <li>
+            <a href="#" id="toggle-login" ng-click="logout()" ng-hide="loggedIn">Logout</a>
         </li>
     </ul>
 </div>

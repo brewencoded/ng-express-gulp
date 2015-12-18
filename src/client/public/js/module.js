@@ -7,7 +7,10 @@ angular.module('myApp', ['ui.router'])
             $stateProvider
                 .state('main', {
                     abstract: true,
-                    templateUrl: '/templates/landing.html'
+                    templateUrl: '/templates/landing.html',
+                    data: {
+                        requireLogin: false
+                    }
                 })
                 .state('main.index', {
                     url: '/',
@@ -17,15 +20,6 @@ angular.module('myApp', ['ui.router'])
                     url: '/login',
                     templateUrl: '/templates/loginPage.html'
                 })
-                .state('user', {
-                    abstract: true,
-                    templateUrl: '/templates/user.html',
-                    controller: 'userInfoCtrl'
-                })
-                .state('user.index', {
-                    url: '/',
-                    templateUrl: '/templates/profile.html'
-                })
                 .state('main.about', {
                     url: '/about',
                     templateUrl: '/templates/about.html'
@@ -33,6 +27,18 @@ angular.module('myApp', ['ui.router'])
                 .state('main.contact', {
                     url: '/contact',
                     templateUrl: '/templates/contact.html'
+                })
+                .state('user', {
+                    abstract: true,
+                    templateUrl: '/templates/user.html',
+                    controller: 'userInfoCtrl',
+                    data: {
+                        requireLogin: true
+                    }
+                })
+                .state('user.index', {
+                    url: '/',
+                    templateUrl: '/templates/profile.html'
                 })
                 .state('404', {
                     url: '/404',
@@ -42,19 +48,14 @@ angular.module('myApp', ['ui.router'])
         }
     ]).run(['$rootScope', '$state', 'AuthSvc',
         function($rootScope, $state, AuthSvc) {
+            $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+                var requiresLogin = toState.data.requiresLogin;
 
-            /*$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-
-                var isAuthenticationRequired = toState.data && toState.data.requiresLogin && !User.isLoggedIn;
-
-                if (isAuthenticationRequired) {
+                if (requiresLogin && typeof $rootScope.currentUser === 'undefined') {
                     event.preventDefault();
-                    $state.go('home.loggedIn.index');
+                    // get me a login modal!
                 }
-            });*/
+            });
 
         }
-    ])
-    .controller('LogonCtrl', ['$scope', 'AuthSvc', function($scope, AuthSvc) {
-        $scope.auth = AuthSvc;
-    }]);
+    ]);

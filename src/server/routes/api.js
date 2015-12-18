@@ -10,7 +10,7 @@ var express = require('express'),
     cipher = require('../cipherService'),
     LocalStrategy = require('passport-local').Strategy,
     bcrypt = require('bcrypt-nodejs'),
-    secret = require('../secret');
+    jwt = require('jsonwebtoken');
 
 var Model = require('../models/Users');
 /**
@@ -65,6 +65,38 @@ passport.use(new LocalStrategy({
     }
 ));
 
+// Authentication middleware
+function tokenAuth(req, res, next) {
+    var headers = req.headers;
+    if (headers && headers.authorization) {
+        var authorization = headers.authorization;
+        var part = authorization.split(' ');
+        if (part.length === 2) {
+            var token = part[1];
+
+            jwt.verify(token, SECRET, function(err, decoded) {
+                if (err) {
+                    res.json({
+                        message: 'You are not authorized to access this content'
+                    });
+                } else {
+                    req.decodedToken = decoded;
+                    next();
+                }
+            });
+
+        } else {
+            res.status(401).json({
+                message: 'You are not authrized to access this content'
+            });
+        }
+    } else {
+        res.status(401).json({
+            message: 'You are not authrized to access this content'
+        });
+    }
+}
+
 /* API routes */
 
 router.use(bodyParser.json());
@@ -83,7 +115,6 @@ router.post('/login', function(req, res, next) {
                 error: err
             });
         }
-        console.log(user);
         //user has authenticated correctly thus we create a JWT token
         var token = cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE);
         res.status(200).json({
@@ -142,6 +173,25 @@ router.post('/register', function(req, res) {
     });
 });
 
+//api routes
+router.get('/api/user', tokenAuth, function(req, res) {
+    new Model.User({
+            'username': req.decodedToken.username
+        })
+        .fetch({
+            withRelated: ['roles']
+        })
+        .then(function(user) {
+            var userInfo = user.toJSON();
+            res.status(200).json({
+                username: userInfo.username,
+                roles: userInfo.roles
+            });
+        })
+        .catch(function(err) {
+
+        });
+});
 
 //Send back to index to handle 404
 router.get("*", function(req, res) {
