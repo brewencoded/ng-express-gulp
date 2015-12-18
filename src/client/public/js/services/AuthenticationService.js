@@ -1,8 +1,8 @@
 angular.module('myApp')
-    .factory('AuthSvc', ['$http', function($http) {
+    .factory('AuthSvc', ['$http', '$rootScope', '$window', function($http, $rootScope, $window) {
         return {
             isLoggedIn: function (cb) {
-            	$http({method: 'GET', url: '/api/user'})
+            	$http({method: 'GET', url: '/auth'})
                     .then(function (data) {
                     	console.log(data);
                     	cb(data);
@@ -16,6 +16,11 @@ angular.module('myApp')
                 $http.post('/register', user)
                     .then(success, error);
             },
+            logout: function () {
+            	delete $window.localStorage.token;
+            	$rootScope.isLoggedIn = false;
+            	console.log($rootScope.isLoggedIn);
+            }
         };
     }])
     .factory('AuthInterceptor', ['$rootScope', '$q', '$window', function($rootScope, $q, $window) {

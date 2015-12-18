@@ -77,7 +77,7 @@ function tokenAuth(req, res, next) {
             jwt.verify(token, SECRET, function(err, decoded) {
                 if (err) {
                     res.json({
-                        message: 'You are not authorized to access this content'
+                        message: 'You are not logged in.'
                     });
                 } else {
                     req.decodedToken = decoded;
@@ -173,8 +173,16 @@ router.post('/register', function(req, res) {
     });
 });
 
+router.get('/auth', tokenAuth, function (req, res) {
+    res.send(200).json({
+        authenticated: true
+    });
+});
+
+router.use('/api', tokenAuth);
+
 //api routes
-router.get('/api/user', tokenAuth, function(req, res) {
+router.get('/api/user', function(req, res) {
     new Model.User({
             'username': req.decodedToken.username
         })

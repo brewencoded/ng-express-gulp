@@ -1,6 +1,6 @@
 <div class="login-aside" show-login>
     <h3>Login</h3>
-    <form ng-controller="LoginCtrl" form-validate formtype="login" ng-submit="login()" novalidate>
+    <form form-validate formtype="login" ng-submit="login()" novalidate>
         <p class="form-error">{{ message.login.error }}</p>
         <input type="email" ng-model="loginForm.email" name="login-email" placeholder="email">
         <input type="password" ng-model="loginForm.password" name="login-password" placeholder="password" ng-minlength="6">
@@ -9,7 +9,7 @@
     <hr>
     <h3>Register</h3>
     <!-- TODO: add ng-submit directive that will be called by form-validation directive -->
-    <form ng-controller= "RegisterCtrl" form-validate formtype="register" ng-submit="register()" novalidate>
+    <form form-validate formtype="register" ng-submit="register()" novalidate>
     	<p class="form-error">{{ message.register.error }}</p>
         <input type="email" ng-model="registerForm.email" name="register-email" placeholder="email">
         <input type="password" ng-model="registerForm.password" name="register-password" placeholder="password" ng-minlength="6">

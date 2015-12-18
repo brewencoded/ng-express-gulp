@@ -8,6 +8,7 @@ angular.module('myApp', ['ui.router'])
                 .state('main', {
                     abstract: true,
                     templateUrl: '/templates/landing.html',
+                    controller: 'AuthCtrl',
                     data: {
                         requireLogin: false
                     }
@@ -48,6 +49,15 @@ angular.module('myApp', ['ui.router'])
         }
     ]).run(['$rootScope', '$state', 'AuthSvc',
         function($rootScope, $state, AuthSvc) {
+            AuthSvc.isLoggedIn(function (data) {
+                if(data) {
+                    console.log(data);
+                    $rootScope.isLoggedIn = true;
+                } else {
+                    console.log('not logged in');
+                    $rootScope.isLoggedIn = false;
+                }
+            });
             $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
                 var requiresLogin = toState.data.requiresLogin;
 
