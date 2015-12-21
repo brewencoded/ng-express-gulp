@@ -73,7 +73,8 @@ gulp.task('dev-js', ['bower-js'], function() {
 gulp.task('bower-js', ['bower-js-maps'], function() {
     return gulp.src([
             'src/client/bower/angular/angular.min.js',
-            'src/client/bower/angular-ui-router/release/angular-ui-router.min.js'
+            'src/client/bower/angular-ui-router/release/angular-ui-router.min.js',
+            'src/client/bower/tg-angular-validator/dist/angular-validator.min.js'
         ])
         .pipe(plumber())
         .pipe(concat('libs.min.js'))
