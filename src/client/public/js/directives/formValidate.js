@@ -21,6 +21,7 @@ angular.module('myApp')
                             break;
                         case 'password':
                             validatePassword(scope, formElements[i], errorElement);
+                            break;
                         default:
                             break;
                     }

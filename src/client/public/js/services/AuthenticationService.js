@@ -4,7 +4,6 @@ angular.module('myApp')
             isLoggedIn: function (cb) {
             	$http({method: 'GET', url: '/auth'})
                     .then(function (data) {
-                    	console.log(data);
                     	cb(data);
                     });
             },

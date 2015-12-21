@@ -1,4 +1,4 @@
-angular.module('myApp', ['ui.router'])
+angular.module('myApp', ['ui.router', 'angularValidator'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider) {
             'use strict';
@@ -8,7 +8,6 @@ angular.module('myApp', ['ui.router'])
                 .state('main', {
                     abstract: true,
                     templateUrl: '/templates/landing.html',
-                    controller: 'AuthCtrl',
                     data: {
                         requireLogin: false
                     }
@@ -32,14 +31,14 @@ angular.module('myApp', ['ui.router'])
                 .state('user', {
                     abstract: true,
                     templateUrl: '/templates/user.html',
-                    controller: 'userInfoCtrl',
-                    data: {
-                        requireLogin: true
-                    }
+                    controller: 'userInfoCtrl'
                 })
                 .state('user.index', {
                     url: '/',
-                    templateUrl: '/templates/profile.html'
+                    templateUrl: '/templates/profile.html',
+                    data: {
+                        requiresLogin: true
+                    }
                 })
                 .state('404', {
                     url: '/404',
@@ -49,22 +48,25 @@ angular.module('myApp', ['ui.router'])
         }
     ]).run(['$rootScope', '$state', 'AuthSvc',
         function($rootScope, $state, AuthSvc) {
-            AuthSvc.isLoggedIn(function (data) {
-                if(data) {
-                    console.log(data);
-                    $rootScope.isLoggedIn = true;
-                } else {
-                    console.log('not logged in');
-                    $rootScope.isLoggedIn = false;
-                }
-            });
             $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
                 var requiresLogin = toState.data.requiresLogin;
 
-                if (requiresLogin && typeof $rootScope.currentUser === 'undefined') {
-                    event.preventDefault();
-                    // get me a login modal!
+                if (requiresLogin || toState.name === 'main.index') {
+                    AuthSvc.isLoggedIn(function(data) {
+                        if (data) {
+                            console.log(data);
+                            $rootScope.isLoggedIn = true;
+                            if (toState.name === 'main.index') {
+                                $state.go('user.index');
+                            }
+                        } else {
+                            console.log('not logged in');
+                            $rootScope.isLoggedIn = false;
+                        }
+                    });
                 }
+
+
             });
 
         }

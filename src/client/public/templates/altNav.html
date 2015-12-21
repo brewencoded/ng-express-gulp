@@ -1,0 +1,13 @@
+<div class="nav">
+    <ul>
+        <li ui-sref-active="active">
+            <a ui-sref="user.index">Home</a>
+        </li>
+        <li>
+            <a href="#" id="toggle-login" ng-click="toggleLogin()" ng-hide="$root.isLoggedIn">Login</a>
+        </li>
+        <li>
+            <a href="#" id="toggle-login" ng-click="logout()" ng-show="$root.isLoggedIn">Logout</a>
+        </li>
+    </ul>
+</div>

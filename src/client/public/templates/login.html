@@ -1,19 +1,67 @@
 <div class="login-aside" show-login>
     <h3>Login</h3>
-    <form form-validate formtype="login" ng-submit="login()" novalidate>
-        <p class="form-error">{{ message.login.error }}</p>
-        <input type="email" ng-model="loginForm.email" name="login-email" placeholder="email">
-        <input type="password" ng-model="loginForm.password" name="login-password" placeholder="password" ng-minlength="6">
+    <form name="formLogin" angular-validator-submit="login(loginForm)" angular-validator novalidate>
+
+        <div class="form-field">
+            <input  type = "email"
+                    name = "login-email"
+                    ng-model = "loginForm.email"
+                    validate-on = "dirty"
+                    invalid-message = "'Please enter a valid email'"
+                    required-message = "'Email is required'"
+                    placeholder="email"
+                    required>
+        </div>
+
+        <div class="form-field">
+           <input   type = "password"
+                    name = "login-password"
+                    ng-model = "loginForm.password"
+                    validator = "passwordValidator(loginForm.password) === true"
+                    invalid-message = "passwordValidator(loginForm.password)"
+                    required-message = "'Password is required'"
+                    validate-on = "dirty"
+                    placeholder="password"
+                    required>
+            </div>
         <input type="submit" id="login-btn" value="Submit">
     </form>
     <hr>
     <h3>Register</h3>
     <!-- TODO: add ng-submit directive that will be called by form-validation directive -->
-    <form form-validate formtype="register" ng-submit="register()" novalidate>
-    	<p class="form-error">{{ message.register.error }}</p>
-        <input type="email" ng-model="registerForm.email" name="register-email" placeholder="email">
-        <input type="password" ng-model="registerForm.password" name="register-password" placeholder="password" ng-minlength="6">
-        <input type="password" ng-model="registerForm.passwordVerify" name="password-verify" placeholder="password verify" ng-minlength="6">
+    <form  name="formRegister" angular-validator-submit="register(registerForm)" angular-validator novalidate>
+         <div class="form-field">
+            <input  type = "email"
+                    name = "register-email"
+                    ng-model = "registerForm.email"
+                    validate-on = "dirty"
+                    invalid-message = "'Please enter a valid email'"
+                    required-message = "'Email is required'"
+                    placeholder="email"
+                    required>
+        </div>
+        <div class="form-field">
+           <input   type = "password"
+                    name = "register-password"
+                    ng-model = "registerForm.password"
+                    validator = "passwordValidator(registerForm.password) === true"
+                    invalid-message = "passwordValidator(registerForm.password)"
+                    required-message = "'Password is required'"
+                    validate-on = "dirty"
+                    placeholder="password"
+                    required>
+        </div>
+        <div class="form-field">
+           <input   type = "password"
+                    name = "password-verify"
+                    ng-model = "registerForm.passwordVerify"
+                    validator = "passwordValidator(registerForm.passwordVerify) === true"
+                    invalid-message = "passwordValidator(registerForm.passwordVerify)"
+                    required-message = "'Password Confirmation is required'"
+                    validate-on = "dirty"
+                    placeholder="password"
+                    required>
+        </div>
         <input type="submit" id="register-btn" value="Submit">
     </form>
 </div>
