@@ -174,9 +174,6 @@ gulp.task('nodemon', function(cb) {
             }
             called = true;
         })
-        .on('change', function () {
-            gulp.start('server-files');
-        })
         .on('restart', function () {
             // reload connected browsers after a slight delay
             setTimeout(function reload() {
