@@ -45,29 +45,34 @@ angular.module('myApp', ['ui.router', 'angularValidator'])
                     templateUrl: '/templates/404.html'
                 });
             $httpProvider.interceptors.push('AuthInterceptor');
+            
         }
-    ]).run(['$rootScope', '$state', 'AuthSvc',
-        function($rootScope, $state, AuthSvc) {
-            $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-                var requiresLogin = toState.data.requiresLogin;
+    ]).run(['$rootScope', '$state', 'AuthSvc', function($rootScope, $state, AuthSvc) {
+        AuthSvc.isLoggedIn(function(data) {
+            if (data) {
+                $rootScope.isLoggedIn = true;
+                $state.go('user.index');
+               
+            } else {
+                console.log('not logged in');
+                $rootScope.isLoggedIn = false;
+                $state.go('main.login');
+            }
+        });
 
-                if (requiresLogin || toState.name === 'main.index') {
-                    AuthSvc.isLoggedIn(function(data) {
-                        if (data) {
-                            console.log(data);
-                            $rootScope.isLoggedIn = true;
-                            if (toState.name === 'main.index') {
-                                $state.go('user.index');
-                            }
-                        } else {
-                            console.log('not logged in');
-                            $rootScope.isLoggedIn = false;
-                        }
-                    });
-                }
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+            var requiresLogin = toState.data.requiresLogin;
+
+            if (toState.name === 'main.index' && $rootScope.isLoggedIn) {
+                    $state.go('user.index');
+            }
+
+            if (requiresLogin && $rootScope.isLoggedIn === false) {
+                $state.go('main.login');
+            }
 
 
-            });
+        });
 
         }
     ]);
