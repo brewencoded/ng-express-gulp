@@ -8,13 +8,13 @@ describe('showLogin', function() {
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         $httpBackend = _$httpBackend_;
+        $httpBackend.expectGET('/auth');
+    	$httpBackend.whenGET('/auth').respond({ hello: '' });
         $httpBackend.expectGET('/templates/landing.html');
-    	$httpBackend.whenGET('/templates/landing.html').respond({ hello: '' });
+        $httpBackend.whenGET('/templates/landing.html').respond({ hello: '' });
     }));
 
     it('should toggle between 2 classes on broadcast', function() {
-    	
-
         var element = $compile('<div show-login></div>')($rootScope);
         $rootScope.$digest();
         $rootScope.$broadcast('requestLoginEvent');

@@ -1,19 +1,19 @@
 'use strict';
 
-describe('LoginCtrl', function() {
+describe('AuthCtrl', function() {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 
     beforeEach(module('myApp'));
 
-    var $controller, rootScope, $scope, loginCtrl;
+    var $controller, $rootScope, $scope, loginCtrl;
 
-    beforeEach(inject(function($rootScope, _$controller_) {
+    beforeEach(inject(function(_$rootScope_, _$controller_) {
         $controller = _$controller_;
-        rootScope = $rootScope;
+        $rootScope = _$rootScope_;
         $scope = {};
-            loginCtrl = $controller('LoginCtrl', {
-                $scope: $scope
-            });
+        loginCtrl = $controller('AuthCtrl', {
+            $scope: $scope
+        });
     }));
 
     describe('controller', function() {
@@ -24,54 +24,14 @@ describe('LoginCtrl', function() {
 
     describe('toggleLogin', function() {
         beforeEach(function() {
-            spyOn(rootScope, '$broadcast').and.callThrough();
+            spyOn($rootScope, '$broadcast').and.callThrough();
         });
 
         it('should broadcast a requestLoginEvent', function() {
             $scope.toggleLogin();
-            expect(rootScope.$broadcast).toHaveBeenCalledWith('requestLoginEvent');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('requestLoginEvent');
         });
 
     });
 
-    describe('checkFields', function() {
-        it('should show error if fields are empty', function() {
-            $scope.login();
-            expect($scope.message.error).toEqual('All fields are required');
-        });
-    });
-
-}); // describe loginCtrl
-
-describe('RegisterCtrl', function() {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
-
-    beforeEach(module('myApp'));
-    beforeEach(module('ui.router'));
-
-    var $controller, rootScope, $scope, registerCtrl;
-
-    beforeEach(inject(function($rootScope, _$controller_) {
-        $controller = _$controller_;
-        rootScope = $rootScope;
-        $scope = {
-        };
-        registerCtrl = $controller('RegisterCtrl', {
-            $scope: $scope
-        });
-    }));
-
-    describe('controller', function() {
-
-        it('should be defined', function() {
-            expect(registerCtrl).toBeDefined();
-        });
-    });
-
-    describe('checkFields', function() {
-        it('should show error if fields are empty', function() {
-            $scope.register();
-            expect($scope.message.error).toEqual('All fields are required');
-        });
-    });
-});
+}); // describe authCtrl

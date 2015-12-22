@@ -176,11 +176,11 @@ gulp.task('nodemon', function(cb) {
         })
         .on('restart', function () {
             // reload connected browsers after a slight delay
-            setTimeout(function reload() {
+            /*setTimeout(function reload() {
                 browserSync.reload({
                     stream: false
                 });
-            }, 1000);
+            }, 1000);*/
         });
 });
 
