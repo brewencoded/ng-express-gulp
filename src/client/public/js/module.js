@@ -7,14 +7,14 @@ angular.module('myApp', ['ui.router', 'angularValidator'])
             $stateProvider
                 .state('main', {
                     abstract: true,
-                    templateUrl: '/templates/landing.html',
-                    data: {
-                        requireLogin: false
-                    }
+                    templateUrl: '/templates/landing.html'
                 })
                 .state('main.index', {
                     url: '/',
-                    templateUrl: '/templates/home.html'
+                    templateUrl: '/templates/home.html',
+                    data: {
+                        requiresLogin: false
+                    }
                 })
                 .state('main.login', {
                     url: '/login',
