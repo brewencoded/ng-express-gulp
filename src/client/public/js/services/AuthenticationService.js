@@ -5,6 +5,8 @@ angular.module('myApp')
             	$http({method: 'GET', url: '/auth'})
                     .then(function (data) {
                     	cb(data);
+                    }, function (err) {
+                    	console.log(err); //TODO: error handling
                     });
             },
             login: function(user, success, error) {

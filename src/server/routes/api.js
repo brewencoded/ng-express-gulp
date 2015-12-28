@@ -10,7 +10,8 @@ var express = require('express'),
     cipher = require('../cipherService'),
     LocalStrategy = require('passport-local').Strategy,
     bcrypt = require('bcrypt-nodejs'),
-    jwt = require('jsonwebtoken');
+    jwt = require('jsonwebtoken'),
+    strategies = require('./passportStrategies');
 
 var Model = require('../models/Users');
 /**
@@ -30,40 +31,7 @@ var LOCAL_STRATEGY = {
 };
 
 // TODO: implement server side validation
-passport.use(new LocalStrategy({
-        usernameField: 'email'
-    },
-    function(username, password, done) {
-        console.log('searching ' + username);
-        new Model.User({
-                'username': username
-            })
-            .fetch({
-                withRelated: ['roles']
-            })
-            .then(function(user) {
-                if (!user) {
-                    return done(null, false, {
-                        message: 'Username and/or password combination invalid.'
-                    });
-                } else {
-                    var matches = bcrypt.compareSync(password, user.get('password'));
-                    if (matches) {
-                        return done(null, user.toJSON());
-                    } else {
-                        return done(null, false, {
-                            message: 'Username and/or password combination invalid.'
-                        });
-                    }
-                }
-            })
-            .catch(function(err) {
-                return done(null, false, {
-                    message: 'Something went wrong please try again later.'
-                });
-            });
-    }
-));
+passport.use(strategies.local);
 
 // Authentication middleware
 function tokenAuth(req, res, next) {
@@ -80,22 +48,24 @@ function tokenAuth(req, res, next) {
                         message: 'You are not logged in.'
                     });
                 } else {
-                    req.decodedToken = decoded;
                     next();
                 }
             });
 
         } else {
             res.status(401).json({
-                message: 'You are not authrized to access this content'
+                message: 'You are not authorized to access this content'
             });
         }
     } else {
         res.status(401).json({
-            message: 'You are not authrized to access this content'
+            message: 'You are not authorized to access this content'
         });
     }
 }
+
+router.use('/auth', tokenAuth);
+router.use('/api', tokenAuth);
 
 /* API routes */
 
@@ -116,10 +86,11 @@ router.post('/login', function(req, res, next) {
             });
         }
         //user has authenticated correctly thus we create a JWT token
-        var token = cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE);
-        res.status(200).json({
-            token: token,
-            user: user
+        cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
+            res.status(200).json({
+                token: token,
+                user: user
+            });
         });
 
     })(req, res, next);
@@ -173,13 +144,11 @@ router.post('/register', function(req, res) {
     });
 });
 
-router.get('/auth', tokenAuth, function (req, res) {
-    res.send(200).json({
+router.get('/auth', function(req, res) {
+    res.status(200).json({
         authenticated: true
     });
 });
-
-router.use('/api', tokenAuth);
 
 //api routes
 router.get('/api/user', function(req, res) {
