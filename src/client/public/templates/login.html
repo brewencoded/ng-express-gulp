@@ -55,9 +55,9 @@
            <input   type = "password"
                     name = "password-verify"
                     ng-model = "registerForm.passwordVerify"
-                    validator = "passwordValidator(registerForm.passwordVerify) === true"
-                    invalid-message = "passwordValidator(registerForm.passwordVerify)"
-                    required-message = "'Password Confirmation is required'"
+                    validator = "registerForm.password === registerForm.passwordVerify"
+                    invalid-message = "'Passwords do not match'"
+                    required-message = "'Password confirmation is required'"
                     validate-on = "dirty"
                     placeholder="password"
                     required>

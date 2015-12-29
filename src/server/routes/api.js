@@ -11,7 +11,8 @@ var express = require('express'),
     LocalStrategy = require('passport-local').Strategy,
     bcrypt = require('bcrypt-nodejs'),
     jwt = require('jsonwebtoken'),
-    strategies = require('./passportStrategies');
+    strategies = require('./passportStrategies'),
+    validate = require('../validation');
 
 var Model = require('../models/Users');
 /**
@@ -23,17 +24,17 @@ var ALGORITHM = "HS256";
 var ISSUER = "";
 var AUDIENCE = "";
 
-// Local strategy
-var LOCAL_STRATEGY = {
-    usernameField: 'email',
-    passwordField: 'password',
-    passReqToCallback: false
-};
-
-// TODO: implement server side validation
+//passport strategies
 passport.use(strategies.local);
 
 // Authentication middleware
+/**
+ * Verifies whether token is valid or expired
+ * @param  {object}   req
+ * @param  {object}   res
+ * @param  {Function} next
+ * @return {object}        return value is either json err, or flow return
+ */
 function tokenAuth(req, res, next) {
     var headers = req.headers;
     if (headers && headers.authorization) {
@@ -76,24 +77,36 @@ router.use(bodyParser.urlencoded({
 
 // Authentication routes
 router.post('/login', function(req, res, next) {
-    passport.authenticate('local', function(err, user, info) {
-        if (err) {
-            return next(err);
-        }
-        if (!user) {
-            return res.status(401).json({
-                error: err
-            });
-        }
-        //user has authenticated correctly thus we create a JWT token
-        cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
-            res.status(200).json({
-                token: token,
-                user: user
-            });
+    var email = validate.email(req.body.email);
+    if (email === 'invalid') {
+        res.status(401).json({
+            message: 'Not a valid email.'
         });
+    } else if (!validate.password(req.body.password)) {
+        res.status(401).json({
+            message: 'Invalid password format.'
+        });
+    } else {
 
-    })(req, res, next);
+        passport.authenticate('local', function(err, user, info) {
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
+                return res.status(401).json({
+                    error: info.message
+                });
+            }
+            //user has authenticated correctly thus we create a JWT token
+            cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
+                res.status(200).json({
+                    token: token,
+                    user: user
+                });
+            });
+
+        })(req, res, next);
+    }
 });
 
 router.post('/register', function(req, res) {

@@ -20,7 +20,6 @@ angular.module('myApp')
             logout: function () {
             	delete $window.localStorage.token;
             	$rootScope.isLoggedIn = false;
-            	console.log($rootScope.isLoggedIn);
             }
         };
     }])

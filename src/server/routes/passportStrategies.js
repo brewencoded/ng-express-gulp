@@ -1,6 +1,8 @@
 var LocalStrategy = require('passport-local').Strategy,
 	bcrypt = require('bcrypt-nodejs'),
 	Model = require('../models/Users');
+    
+    require('../validation');
 
 module.exports.local = new LocalStrategy({
             usernameField: 'email'
@@ -36,4 +38,3 @@ module.exports.local = new LocalStrategy({
                 });
         }
     );
-
