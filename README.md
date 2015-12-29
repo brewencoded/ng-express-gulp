@@ -3,14 +3,15 @@ Base structure for an angular, gulp, and express project with browser-sync and g
 
 **Warning**: This is currently under **heavy** active development and will be very unstable until the app structure is stabilized. 
 
-## Before Installation
+## Checklist
+
 You will need to download and install MySQL from [Here](https://www.mysql.com/) or use your package manager if Mac or Linux
+
+You **must** have node installed first. Download [Here](https://nodejs.org/) or use [nvm](https://github.com/creationix/nvm)
 
 Now you have a database for the app to work with.
 
 ### Install
-
-You **must** have node installed first. Download [Here](https://nodejs.org/) or use [nvm](https://github.com/creationix/nvm)
 
 Open a terminal and log into mysql and run the create.sql with `mysql> source path/to/create.sql`
 
