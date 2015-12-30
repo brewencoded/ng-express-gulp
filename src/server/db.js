@@ -1,3 +1,7 @@
+/**
+ * Database connection info
+ */
+
 var knex = require('knex')({
   client: 'mysql',
   connection: {

@@ -7,6 +7,13 @@ var LocalStrategy = require('passport-local').Strategy,
 module.exports.local = new LocalStrategy({
             usernameField: 'email'
         },
+        /**
+         * passport strategy to validate against email and encrypted password 
+         * @param  {string}   username email of user
+         * @param  {string}   password unencrypted password
+         * @param  {Function} done
+         * @return {Object}            returns user object or error
+         */ 
         function(username, password, done) {
             console.log('searching ' + username);
             new Model.User({

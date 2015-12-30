@@ -1,4 +1,3 @@
-/* jshint node: true */
 'use strict';
 
 var express = require('express'),
@@ -30,10 +29,10 @@ passport.use(strategies.local);
 // Authentication middleware
 /**
  * Verifies whether token is valid or expired
- * @param  {object}   req
- * @param  {object}   res
+ * @function 
+ * @param  {Object}   req
+ * @param  {Object}   res
  * @param  {Function} next
- * @return {object}        return value is either json err, or flow return
  */
 function tokenAuth(req, res, next) {
     var headers = req.headers;
@@ -76,6 +75,14 @@ router.use(bodyParser.urlencoded({
 }));
 
 // Authentication routes
+/**
+ * Validates email and password and compares against hashed database entries.
+ * @function
+ * @name login 
+ * @param  {Object} req
+ * @param  {Object} res
+ * @param  {Object} next
+ */
 router.post('/login', function(req, res, next) {
     var email = validate.email(req.body.email);
     if (email === 'invalid') {
@@ -109,54 +116,85 @@ router.post('/login', function(req, res, next) {
     }
 });
 
+/**
+ * Takes request parameters and, after validation, hashes the password and stores the user information in the database.
+ * @function
+ * @name register
+ * @param  {Object} req  
+ * @param  {Object} res                
+ */
 router.post('/register', function(req, res) {
-    var userName = req.body.email;
+    var email = req.body.email;
     var password = req.body.password;
     var passwordVerify = req.body.passwordVerify;
     var user;
 
-    cipher.hashPassword(password, function(hash, salt) {
-        //create user
-        Model.User
-            .forge({
-                username: userName,
-                password: hash,
-                salt: salt
-            })
-            .save()
-            .then(function(model) {
-                var id = model.get('userId');
+    var userName = validate.email(email);
+    if (userName === 'invalid') {
+        res.status(401).json({
+            message: 'Not a valid email.'
+        });
+    } else if (!validate.password(req.body.password)) {
+        res.status(401).json({
+            message: 'Invalid password format.'
+        });
+    } else if (password !== passwordVerify) {
+        res.status(401).json({
+            message: 'Passwords must match.'
+        });
+    } else {
 
-                //create userrole with userid
-                Model.UserRole
-                    .forge({
-                        userId: id,
-                        roleId: 1
-                    })
-                    .save()
-                    .then(function(ur) {
-                        var user = model.toJSON();
-                        user.roles = ur.toJSON();
-                        console.log(user);
+        cipher.hashPassword(password, function(hash, salt) {
+            //create user
+            Model.User
+                .forge({
+                    username: userName,
+                    password: hash,
+                    salt: salt
+                })
+                .save()
+                .then(function(model) {
+                    var id = model.get('userId');
 
-                        cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
-                            res.status(200).json({
-                                token: token,
-                                user: user
+                    //create userrole with userid
+                    Model.UserRole
+                        .forge({
+                            userId: id,
+                            roleId: 1
+                        })
+                        .save()
+                        .then(function(ur) {
+                            var user = model.toJSON();
+                            user.roles = ur.toJSON();
+                            console.log(user);
+
+                            cipher.createToken(user, SECRET, ALGORITHM, EXPIRES_IN_MINUTES, ISSUER, AUDIENCE, function(token) {
+                                res.status(200).json({
+                                    token: token,
+                                    user: user
+                                });
                             });
+                        })
+                        .catch(function(err) {
+                            res.send(err);
                         });
-                    })
-                    .catch(function(err) {
-                        res.send(err);
-                    });
 
-            })
-            .catch(function(err) {
-                res.send(err);
-            });
-    });
+                })
+                .catch(function(err) {
+                    res.send(err);
+                });
+        });
+    }
 });
 
+
+/**
+ * Verifies the authentication token via an auth middleware.
+ * @function
+ * @name auth
+ * @param  {Object} req  
+ * @param  {Object} res
+ */
 router.get('/auth', function(req, res) {
     res.status(200).json({
         authenticated: true
@@ -164,6 +202,13 @@ router.get('/auth', function(req, res) {
 });
 
 //api routes
+/**
+ * Route for requesting user information if authentication middleware passes
+ * @function
+ * @name user
+ * @param  {Object} req  
+ * @param  {Object} res 
+ */
 router.get('/api/user', function(req, res) {
     new Model.User({
             'username': req.decodedToken.username
@@ -184,6 +229,13 @@ router.get('/api/user', function(req, res) {
 });
 
 //Send back to index to handle 404
+/**
+ * Directs all other requests back to index for ui-router to handler
+ * @function
+ * @name asterisk
+ * @param  {Object} req  
+ * @param  {Object} res  
+ */
 router.get("*", function(req, res) {
     res.sendFile(path.join(__dirname + '/../../client/public/index.html'));
 });
